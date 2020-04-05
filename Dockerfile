@@ -8,10 +8,11 @@ RUN dotnet publish -c Release -o /release
 # Install
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 COPY --from=builder /release /app
-WORKDIR /app
+COPY --from=builder /src/Entrypoint.sh /app
+RUN chmod +x /app/Entrypoint.sh
 
 # Config
 EXPOSE 80
 
 # Run
-ENTRYPOINT dotnet BoozeApi.dll
+ENTRYPOINT /app/Entrypoint.sh
