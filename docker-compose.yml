@@ -1,14 +1,12 @@
-version: '3'
+version: '3.7'
 services:
-    api:
+    boozeapi:
         build: 
-            context: .
-            dockerfile: Dockerfile-api
+            context: BoozeApi
         ports:
             - "80:80"
     dbmaintainer:
         depends_on: 
-          - api
+          - boozeapi
         build:
-            context: .
-            dockerfile: Dockerfile-dbmaintainer
+            context: dbmaintainer

@@ -5,6 +5,6 @@ $r | ForEach-Object {
     $b = $PSItem | ConvertTo-Json
     $body = [System.Text.Encoding]::UTF8.GetBytes($b)
 
-    Invoke-RestMethod -Method Post -Uri http://172.18.0.2/api/BoozeItems -Body $body -ContentType application/json | Out-Null
+    Invoke-RestMethod -Method Post -Uri http://172.19.0.2/api/BoozeItems -Body $body -ContentType application/json | Out-Null
 }
 Write-Host "DB update done!" -ForegroundColor Green
