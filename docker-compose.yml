@@ -10,3 +10,10 @@ services:
           - boozeapi
         build:
             context: dbmaintainer
+    gui:
+        depends_on: 
+          - boozeapi
+        build: 
+            context: BoozeGui
+        ports: 
+            - "80:80"
