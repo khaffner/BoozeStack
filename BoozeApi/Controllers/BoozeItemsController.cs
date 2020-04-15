@@ -48,7 +48,7 @@ namespace BoozeApi.Controllers
 
         // GET: api/BoozeItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BoozeItem>> GetBoozeItem(long id)
+        public async Task<ActionResult<BoozeItem>> GetBoozeItem(Guid id)
         {
             var boozeItem = await _context.BoozeItems.FindAsync(id);
 
@@ -64,13 +64,8 @@ namespace BoozeApi.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBoozeItem(long id, BoozeItem boozeItem)
+        public async Task<IActionResult> PutBoozeItem(Guid id, BoozeItem boozeItem)
         {
-            if (id != boozeItem.ProductNumber)
-            {
-                return BadRequest();
-            }
-
             _context.Entry(boozeItem).State = EntityState.Modified;
 
             try
@@ -106,7 +101,7 @@ namespace BoozeApi.Controllers
 
         // DELETE: api/BoozeItems/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<BoozeItem>> DeleteBoozeItem(long id)
+        public async Task<ActionResult<BoozeItem>> DeleteBoozeItem(Guid id)
         {
             var boozeItem = await _context.BoozeItems.FindAsync(id);
             if (boozeItem == null)
@@ -120,9 +115,9 @@ namespace BoozeApi.Controllers
             return boozeItem;
         }
 
-        private bool BoozeItemExists(long id)
+        private bool BoozeItemExists(Guid id)
         {
-            return _context.BoozeItems.Any(e => e.ProductNumber == id);
+            return _context.BoozeItems.Any(e => e.id == id);
         }
     }
 }
