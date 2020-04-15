@@ -23,16 +23,27 @@ namespace BoozeApi.Controllers
         // GET: api/BoozeItems
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BoozeItem>>> GetBoozeItems(
-            [FromQuery] string category
+            [FromQuery] string category, string source
         )
         {
-            if (string.IsNullOrWhiteSpace(category))
+            if (string.IsNullOrWhiteSpace(category) && string.IsNullOrWhiteSpace(source))
             {
                 return await _context.BoozeItems.ToListAsync();
             }
 
-            category = category.Trim();
-            return await _context.BoozeItems.Where(a => a.Category == category).ToListAsync();
+            var collection = _context.BoozeItems as IQueryable<BoozeItem>;
+            
+            if(!string.IsNullOrWhiteSpace(category))
+            {
+                category = category.Trim();
+                collection = _context.BoozeItems.Where(a => a.Category == category);
+            }
+            if(!string.IsNullOrWhiteSpace(source)) {
+                source = source.Trim();
+                collection = _context.BoozeItems.Where(a => a.Source == source);
+            }
+
+            return await collection.ToListAsync();
         }
 
         // GET: api/BoozeItems/5
