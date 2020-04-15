@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +50,7 @@ namespace BoozeApi.Controllers
 
         // GET: api/BoozeItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BoozeItem>> GetBoozeItem(Guid id)
+        public async Task<ActionResult<BoozeItem>> GetBoozeItem(string id)
         {
             var boozeItem = await _context.BoozeItems.FindAsync(id);
 
@@ -64,7 +66,7 @@ namespace BoozeApi.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBoozeItem(Guid id, BoozeItem boozeItem)
+        public async Task<IActionResult> PutBoozeItem(string id, BoozeItem boozeItem)
         {
             _context.Entry(boozeItem).State = EntityState.Modified;
 
@@ -93,15 +95,20 @@ namespace BoozeApi.Controllers
         [HttpPost]
         public async Task<ActionResult<BoozeItem>> PostBoozeItem(BoozeItem boozeItem)
         {
+            string idstring = boozeItem.Source + boozeItem.ProductNumber.ToString();
+            string idhash = ComputeSha256Hash(idstring);
+
+            boozeItem.id  = idhash;
+
             _context.BoozeItems.Add(boozeItem);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBoozeItem", new { id = Guid.NewGuid() }, boozeItem);
+            return CreatedAtAction("GetBoozeItem", new { id = idhash }, boozeItem);
         }
 
         // DELETE: api/BoozeItems/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<BoozeItem>> DeleteBoozeItem(Guid id)
+        public async Task<ActionResult<BoozeItem>> DeleteBoozeItem(string id)
         {
             var boozeItem = await _context.BoozeItems.FindAsync(id);
             if (boozeItem == null)
@@ -115,9 +122,28 @@ namespace BoozeApi.Controllers
             return boozeItem;
         }
 
-        private bool BoozeItemExists(Guid id)
+        private bool BoozeItemExists(string id)
         {
             return _context.BoozeItems.Any(e => e.id == id);
         }
+
+        // https://www.c-sharpcorner.com/article/compute-sha256-hash-in-c-sharp/
+        static string ComputeSha256Hash(string rawData)  
+        {  
+            // Create a SHA256   
+            using (SHA256 sha256Hash = SHA256.Create())  
+            {  
+                // ComputeHash - returns byte array  
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));  
+  
+                // Convert byte array to a string   
+                StringBuilder builder = new StringBuilder();  
+                for (int i = 0; i < bytes.Length; i++)  
+                {  
+                    builder.Append(bytes[i].ToString("x2"));  
+                }  
+                return builder.ToString();  
+            }  
+        }  
     }
 }
