@@ -9,7 +9,7 @@ using BoozeApi.Models;
 
 namespace BoozeApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/BoozeItems")]
     [ApiController]
     public class BoozeItemsController : ControllerBase
     {
