@@ -30,7 +30,8 @@ namespace BoozeApi.Controllers
         {
             if (string.IsNullOrWhiteSpace(category) && string.IsNullOrWhiteSpace(source))
             {
-                return await _context.BoozeItems.ToListAsync();
+                return BadRequest();
+                // return await _context.BoozeItems.ToListAsync();
             }
 
             var collection = _context.BoozeItems as IQueryable<BoozeItem>;
