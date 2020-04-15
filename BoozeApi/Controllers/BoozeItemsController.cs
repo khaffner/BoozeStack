@@ -101,7 +101,7 @@ namespace BoozeApi.Controllers
             _context.BoozeItems.Add(boozeItem);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBoozeItem", new { id = boozeItem.ProductNumber }, boozeItem);
+            return CreatedAtAction("GetBoozeItem", new { id = Guid.NewGuid() }, boozeItem);
         }
 
         // DELETE: api/BoozeItems/5

@@ -1,9 +1,10 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 public class BoozeItem
 {
     [Key]
-    public long id { get; set; }
+    public Guid id { get; set; }
     public long ProductNumber { get; set; }
     public string Source { get; set; }
     public string Name { get; set; }
