@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BoozeApi.Models;
+using BoozeApi.Helpers;
 
 namespace BoozeApi.Controllers
 {
@@ -97,7 +96,7 @@ namespace BoozeApi.Controllers
         public async Task<ActionResult<BoozeItem>> PostBoozeItem(BoozeItem boozeItem)
         {
             string idstring = boozeItem.Source + boozeItem.ProductNumber.ToString();
-            string idhash = ComputeSha256Hash(idstring);
+            string idhash = HelperFunctions.ComputeSha256Hash(idstring);
 
             boozeItem.id  = idhash;
 
@@ -127,24 +126,5 @@ namespace BoozeApi.Controllers
         {
             return _context.BoozeItems.Any(e => e.id == id);
         }
-
-        // https://www.c-sharpcorner.com/article/compute-sha256-hash-in-c-sharp/
-        static string ComputeSha256Hash(string rawData)  
-        {  
-            // Create a SHA256   
-            using (SHA256 sha256Hash = SHA256.Create())  
-            {  
-                // ComputeHash - returns byte array  
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));  
-  
-                // Convert byte array to a string   
-                StringBuilder builder = new StringBuilder();  
-                for (int i = 0; i < bytes.Length; i++)  
-                {  
-                    builder.Append(bytes[i].ToString("x2"));  
-                }  
-                return builder.ToString();  
-            }  
-        }  
     }
 }
