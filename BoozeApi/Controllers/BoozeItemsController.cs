@@ -24,7 +24,11 @@ namespace BoozeApi.Controllers
         // GET: api/BoozeItems
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BoozeItem>>> GetBoozeItems(
-            [FromQuery] string category, string source
+            [FromQuery] 
+            string category, 
+            string source, 
+            int amount = 10,
+            int page = 1 
         )
         {
             if (string.IsNullOrWhiteSpace(category) && string.IsNullOrWhiteSpace(source))
@@ -44,6 +48,9 @@ namespace BoozeApi.Controllers
                 source = source.Trim();
                 collection = _context.BoozeItems.Where(a => a.Source == source);
             }
+
+            int itemsToSkip = (page-1)*amount;
+            collection = collection.Skip(itemsToSkip).Take(amount);
 
             return await collection.ToListAsync();
         }
